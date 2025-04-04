@@ -2,16 +2,19 @@ class StringCalculator
   def self.add(input)
     return 0 if input.empty?
 
-    delimiter = /,|\n/
+    delimiters = [",", "\n"]
+
     if input.start_with?("//")
-      parts = input.split("\n", 2)
-      delimiter = Regexp.escape(parts[0][2])
-      input = parts[1]
+      delimiter_section, input = input.split("\n", 2)
+      if delimiter_section.match?(/\[.+\]/)
+        delimiters += delimiter_section.scan(/\[(.*?)\]/).flatten
+      else
+        delimiters << delimiter_section[2]
+      end
     end
 
-    numbers = input.split(/#{delimiter}|,|\n/).map(&:to_i)
+    numbers = input.split(Regexp.union(delimiters)).map(&:to_i)
     negatives = numbers.select { |n| n < 0 }
-
     raise "negatives not allowed: #{negatives.join(', ')}" if negatives.any?
 
     numbers.reject { |n| n > 1000 }.sum
