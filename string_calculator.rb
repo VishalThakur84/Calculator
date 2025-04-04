@@ -6,11 +6,13 @@ class StringCalculator
 
     if input.start_with?("//")
       delimiter_section, input = input.split("\n", 2)
-      delimiters += delimiter_section.scan(/\[(.*?)\]/).flatten
-      if delimiters.empty? # single char delimiter (no square brackets)
+      if delimiter_section.match?(/\[.+\]/)
+        delimiters += delimiter_section.scan(/\[(.*?)\]/).flatten
+      else
         delimiters << delimiter_section[2]
       end
     end
+    
 
     numbers = input.split(Regexp.union(delimiters)).map(&:to_i)
     negatives = numbers.select { |n| n < 0 }
