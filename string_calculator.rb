@@ -6,9 +6,8 @@ class StringCalculator
 
     if input.start_with?("//")
       delimiter_section, input = input.split("\n", 2)
-      if delimiter_section.match?(/\[.+\]/)
-        delimiters += delimiter_section.scan(/\[(.*?)\]/).flatten
-      else
+      delimiters += delimiter_section.scan(/\[(.*?)\]/).flatten
+      if delimiters.empty? # single char delimiter (no square brackets)
         delimiters << delimiter_section[2]
       end
     end
@@ -20,3 +19,4 @@ class StringCalculator
     numbers.reject { |n| n > 1000 }.sum
   end
 end
+
